@@ -1,0 +1,29 @@
+    public TreeNode constructMaximumBinaryTree(int[] nums) {
+        if (nums == null) {
+            return null;
+        }
+        
+        return helper(nums, 0, nums.length - 1);
+    }
+    
+    private TreeNode helper(int[] nums, int startIndex, int endIndex) {
+        if (startIndex > endIndex) {
+            return null;
+        }
+        
+        // Find the maximum from nums[startIndex...endIndex]
+        int maxIndex = startIndex;
+        for (int i = startIndex + 1; i <= endIndex; i++) {
+            if (nums[i] > nums[maxIndex]) {
+                maxIndex = i;
+            }
+        }
+        
+        TreeNode node = new TreeNode(nums[maxIndex]);
+        
+        // Divide and concur
+        node.left = helper(nums, startIndex, maxIndex - 1);
+        node.right = helper(nums, maxIndex + 1, endIndex);
+        
+        return node;
+    }
