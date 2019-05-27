@@ -1,0 +1,40 @@
+// solution 1:
+// iterative
+// runtime: O(n)
+// space: O(1)
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public TreeNode insertIntoMaxTree(TreeNode root, int val) {
+        TreeNode node = new TreeNode(val);
+        
+        if (root == null) {
+            return node;
+        }
+        
+        if (val > root.val) {
+            node.left = root;
+            return node;
+        }
+        
+        TreeNode prev = root;
+        TreeNode cur = root;
+        while (cur != null && cur.val > val) {
+            prev = cur;
+            cur = cur.right;
+        }
+        
+        prev.right = node;
+        node.left = cur;
+        
+        return root;
+    }
+}
