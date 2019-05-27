@@ -1,6 +1,6 @@
     // Solution 1:
     // Divide and concur
-    // Runtime: O(nlgn)
+    // Runtime: O(n2)
     // Space: O(n)
     public TreeNode constructMaximumBinaryTree(int[] nums) {
         if (nums == null) {
