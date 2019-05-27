@@ -31,3 +31,8 @@
         
         return node;
     }
+    
+    // solution 2: 
+    // stack
+    // runtime: O(n)
+    // space: O(n2)
