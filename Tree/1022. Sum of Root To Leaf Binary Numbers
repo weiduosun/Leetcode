@@ -1,3 +1,8 @@
+// solution 1:
+// dfs
+// O(n)
+// O(n)
+
 /**
  * Definition for a binary tree node.
  * public class TreeNode {
