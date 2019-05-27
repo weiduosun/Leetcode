@@ -1,6 +1,6 @@
 // solution 1:
 // iterative
-// runtime: O(n)
+// runtime: O(n) increasing sequence
 // space: O(1)
 
 /**
@@ -34,6 +34,25 @@ class Solution {
         
         prev.right = node;
         node.left = cur;
+        
+        return root;
+    }
+}
+
+// solution 2:
+// recursion
+// runtime: O(n) increasing sequence
+// space: O(n) recursion stack space
+
+class Solution {
+    public TreeNode insertIntoMaxTree(TreeNode root, int val) {
+        if (root == null || root.val < val) {
+            TreeNode node = new TreeNode(val);
+            node.left = root;
+            return node;
+        }
+        
+        root.right = insertIntoMaxTree(root.right, val);
         
         return root;
     }
