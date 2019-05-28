@@ -1,0 +1,39 @@
+// solution 1:
+// DFS
+// time: O(n)
+// space: O(n)
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    int res = 0;
+    
+    public int maxAncestorDiff(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        
+        dfs(root, root.val, root.val);
+        
+        return res;
+    }
+    
+    private void dfs(TreeNode root, int min, int max) {
+        if (root == null) {
+            return;
+        }
+        
+        res = Math.max(res, Math.abs(root.val - min));
+        res = Math.max(res, Math.abs(root.val - max));
+        
+        dfs(root.left, Math.min(root.val, min), Math.max(root.val, max));
+        dfs(root.right, Math.min(root.val, min), Math.max(root.val, max));
+    }
+}
