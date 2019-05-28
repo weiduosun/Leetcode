@@ -1,0 +1,50 @@
+// solution 1:
+// preorder traversal
+// if root.val != voyage[index], changing left subtree and right subtree does not work, so return -1.
+// if root.left.val != voyage[index], changing left subtree and right subtree may work.
+// runtime: O(n)
+// space: O(n)
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    int index = 0;
+    List<Integer> res = new ArrayList<>();
+    
+    public List<Integer> flipMatchVoyage(TreeNode root, int[] voyage) {
+        dfs(root, voyage);
+        
+        return res;
+    }
+    
+    private void dfs(TreeNode root, int[] voyage) {
+        if (root == null) {
+            return;
+        }
+        
+        if (root.val != voyage[index]) {
+            res.clear();
+            res.add(-1);
+            return;
+        }
+        
+        index++;
+        
+        if (root.left != null 
+            && root.left.val != voyage[index]) {
+            res.add(root.val);
+            dfs(root.right, voyage);
+            dfs(root.left, voyage);
+        } else {
+            dfs(root.left, voyage);
+            dfs(root.right, voyage);
+        }
+    }
+}
