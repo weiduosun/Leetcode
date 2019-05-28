@@ -1,0 +1,40 @@
+// solution 1:
+// traversal: right -> left -> cur
+// runtime: O(n)
+// space: O(n)
+
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    int cur = 0;
+    
+    public TreeNode bstToGst(TreeNode root) {
+        if (root == null) {
+            return null;
+        }
+        
+        dfs(root);
+        
+        return root;
+    }
+    
+    private void dfs(TreeNode node) {
+        if (node == null) {
+            return;
+        }
+        
+        dfs(node.right);
+        
+        node.val += cur;
+        cur = node.val;
+        
+        dfs(node.left); 
+    }
+}
