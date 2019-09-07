@@ -1,0 +1,104 @@
+Given a non-empty binary search tree and a target value, find k values in the BST that are closest to the target.
+
+Note:
+
+Given target value is a floating point.
+You may assume k is always valid, that is: k ≤ total nodes.
+You are guaranteed to have only one unique set of k values in the BST that are closest to the target.
+Example:
+
+Input: root = [4,2,5,1,3], target = 3.714286, and k = 2
+
+    4
+   / \
+  2   5
+ / \
+1   3
+
+Output: [4,3]
+Follow up:
+Assume that the BST is balanced, could you solve it in less than O(n) runtime (where n = total nodes)?
+
+solution 1: inorder traversal + find Kth closest to the target
+O(n), O(n)
+/**
+ * Definition for a binary tree node.
+ * public class TreeNode {
+ *     int val;
+ *     TreeNode left;
+ *     TreeNode right;
+ *     TreeNode(int x) { val = x; }
+ * }
+ */
+class Solution {
+    public List<Integer> closestKValues(TreeNode root, double target, int k) {
+        List<Integer> res = new ArrayList<>();
+        
+        if (root == null) {
+            return res;
+        }
+        
+        List<Integer> values = new ArrayList<>();
+        inorder(root, values);
+        
+        res = findKCloestToTarget(values, target, k);
+        
+        return res;
+    }
+    
+    private void inorder(TreeNode root, List<Integer> values) {
+        if (root == null) {
+            return;
+        }
+        
+        inorder(root.left, values);
+        values.add(root.val);
+        inorder(root.right, values);
+    }
+    
+    private List<Integer> findKCloestToTarget(List<Integer> values, double target, int k) {
+        List<Integer> res = new ArrayList<>();
+        
+        int left = binarySearch(values, target);
+        int right = left + 1;
+        int n = values.size();
+        
+        for (int i = 0; i < k; i++) {
+            if (right == n || left >= 0 && Math.abs(target - values.get(left)) <= Math.abs(target - values.get(right))) {
+                left--;
+            } else {
+                right++;
+            }
+        }
+        
+        left++;
+        
+        for (int i = left; i < left + k; i++) {
+            res.add(values.get(i));
+        }
+        
+        return res;
+    }
+    
+    private int binarySearch(List<Integer> values, double target) {
+        int start = 0;
+        int end = values.size() - 1;
+        
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (values.get(mid) == target) {
+                return mid;
+            } else if (values.get(mid) > target) {
+                end = mid;
+            } else {
+                start = mid;
+            }
+        }
+        
+        if (Math.abs(values.get(start) - target) <= Math.abs(values.get(end) - target)) {
+            return start;
+        }
+        
+        return end;
+    }
+}
