@@ -1,0 +1,67 @@
+/*
+Given a pattern and a string str, find if str follows the same pattern.
+
+Here follow means a full match, such that there is a bijection between a letter in pattern and a non-empty substring in str.
+
+Example 1:
+
+Input: pattern = "abab", str = "redblueredblue"
+Output: true
+Example 2:
+
+Input: pattern = pattern = "aaaa", str = "asdasdasdasd"
+Output: true
+Example 3:
+
+Input: pattern = "aabb", str = "xyzabcxzyabc"
+Output: false
+Notes:
+You may assume both pattern and str contains only lowercase letters.
+
+O(n*S(n,m)),O(S(n,m)), where S(n,m) is Stirling set number, S(n,m)≈m^n,m is the number of avg branch, n is the depth
+*/
+
+class Solution {
+    public boolean wordPatternMatch(String pattern, String str) {
+        if (pattern == null || str == null) {
+            return true;
+        }
+        
+        return dfs(pattern, 0, str, 0, new HashSet<>(), new HashMap<>());
+    }
+    
+    private boolean dfs(String pattern, int i, String str, int j, Set<String> visited, Map<Character, String> map) {
+        if (i == pattern.length() && j == str.length()) {
+            return true;
+        }
+        
+        if (i == pattern.length() || j == str.length()) {
+            return false;
+        }
+        
+        char c = pattern.charAt(i);
+        
+        if (map.containsKey(c)) {
+            String s = map.get(c);
+            if (!str.substring(j).startsWith(s)) {
+                return false;
+            }
+            return dfs(pattern, i + 1, str, j + s.length(), visited, map);
+        }
+        
+        for (int k = j; k < str.length(); k++) {
+            String cur = str.substring(j, k + 1);
+            if (!visited.contains(cur)) {
+                visited.add(cur);
+                map.put(c, cur);
+                if (dfs(pattern, i + 1, str, k + 1, visited, map)) {
+                    return true;
+                }
+                map.remove(c);
+                visited.remove(cur);
+            }
+        }
+        
+        return false;
+    }
+}
