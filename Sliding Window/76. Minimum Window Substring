@@ -1,0 +1,64 @@
+/*
+Given a string S and a string T, find the minimum window in S which will contain all the characters in T in complexity O(n).
+
+Example:
+
+Input: S = "ADOBECODEBANC", T = "ABC"
+Output: "BANC"
+Note:
+
+If there is no such window in S that covers all characters in T, return the empty string "".
+If there is such window, you are guaranteed that there will always be only one unique minimum window in S.
+
+Time: O(n)
+Space: O(n)
+*/
+
+class Solution {
+    public String minWindow(String s, String t) {
+        if (s == null || t == null) {
+            return null;
+        }
+        
+        int i = 0;
+        int j = 0;
+        int count = 0;
+        int ns = s.length();
+        int nt = t.length();
+        int min = Integer.MAX_VALUE;
+        String res = "";
+        Map<Character, Integer> map = new HashMap<>();
+        
+        for (char c : t.toCharArray()) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+        
+        while (j < ns) {
+            char r = s.charAt(j);
+            if (map.containsKey(r)) {
+                map.put(r, map.get(r) - 1);
+                if (map.get(r) >= 0) {
+                    count++;
+                }
+            }
+            
+            while (count == nt) {
+                if (j - i + 1 < min) {
+                    min = j - i + 1;
+                    res = s.substring(i, j + 1);
+                }
+                char l = s.charAt(i);
+                if (map.containsKey(l)) {
+                    map.put(l, map.get(l) + 1);
+                    if (map.get(l) > 0) {
+                        count--;
+                    }
+                }
+                i++;
+            }
+            j++;
+        }
+        
+        return res;
+    }
+}
