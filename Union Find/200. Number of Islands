@@ -1,0 +1,85 @@
+/*
+Given a 2d grid map of '1's (land) and '0's (water), count the number of islands. An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. You may assume all four edges of the grid are all surrounded by water.
+
+Example 1:
+
+Input:
+11110
+11010
+11000
+00000
+
+Output: 1
+Example 2:
+
+Input:
+11000
+11000
+00100
+00011
+
+Output: 3
+
+Time: O(n)
+Space: O(n)
+*/
+
+class Solution {
+    public int numIslands(char[][] grid) {
+        if (grid == null || grid.length == 0) {
+            return 0;
+        }
+        
+        int m = grid.length;
+        int n = grid[0].length;
+        int[] rank = new int[m * n];
+        int[] parent = new int[m * n];
+        int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+        int count = 0;
+        
+        for (int i = 0; i < m * n; i++) {
+            parent[i] = i;
+        }
+        
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == '1') {
+                    count++;
+                    for (int[] dir : directions) {
+                        int x = i + dir[0];
+                        int y = j + dir[1];
+                        if (x >= 0 && y >= 0 && x < m && y < n && grid[x][y] == '1') {
+                            int a = find(i * n + j, parent);
+                            int b = find(x * n + y, parent);
+                            if (a != b) {
+                                union(a, b, parent, rank);
+                                count--;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return count;
+    }
+    
+    private int find(int i, int[] parent) {
+        if (i != parent[i]) {
+            parent[i] = find(parent[i], parent);
+        }
+        
+        return parent[i];
+    }
+    
+    private void union(int i, int j, int[] parent, int[] rank) {
+        if (rank[i] > rank[j]) {
+            parent[i] = j;
+        } else if (rank[i] < rank[j]) {
+            parent[j] = i;
+        } else {
+            parent[i] = j;
+            rank[j]++;
+        }
+    }
+}
