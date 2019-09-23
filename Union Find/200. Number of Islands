@@ -73,9 +73,9 @@ class Solution {
     }
     
     private void union(int i, int j, int[] parent, int[] rank) {
-        if (rank[i] > rank[j]) {
+        if (rank[i] < rank[j]) {
             parent[i] = j;
-        } else if (rank[i] < rank[j]) {
+        } else if (rank[i] > rank[j]) {
             parent[j] = i;
         } else {
             parent[i] = j;
