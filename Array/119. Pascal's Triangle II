@@ -15,7 +15,7 @@ Follow up:
 Could you optimize your algorithm to use only O(k) extra space?
 */
 
-/* Time: O(k2), Space: O(k)
+/* Time: O(k2), Space: O(k) */
 class Solution {
     public List<Integer> getRow(int rowIndex) {
         List<Integer> res = new ArrayList<>();
