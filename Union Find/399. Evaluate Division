@@ -71,6 +71,7 @@ class Solution {
         for (List<String> e : equations) {
             Node a = nodes.get(e.get(0));
             Node b = nodes.get(e.get(1));
+            // Why b.val / a.val, not reverse???
             union(a, b, b.val / a.val * values[i], nodes);
             i++;
         }
