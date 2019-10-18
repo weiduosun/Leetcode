@@ -1,0 +1,95 @@
+/*
+Given two binary search trees, return True if and only if there is a node in the first tree and a node in the second tree whose values sum up to a given integer target.
+
+ 
+
+Example 1:
+
+
+
+Input: root1 = [2,1,4], root2 = [1,0,3], target = 5
+Output: true
+Explanation: 2 and 3 sum up to 5.
+Example 2:
+
+
+
+Input: root1 = [0,-10,10], root2 = [5,1,7,0,2], target = 18
+Output: false
+ 
+
+Constraints:
+
+Each tree has at most 5000 nodes.
+-10^9 <= target, node.val <= 10^9
+*/
+
+// Time: O(n)
+// Space: O(n)
+
+class Solution {
+    public boolean twoSumBSTs(TreeNode root1, TreeNode root2, int target) {
+        if (root1 == null || root2 == null) {
+            return false;
+        }
+        
+        List<Integer> list1 = new ArrayList<>();
+        List<Integer> list2 = new ArrayList<>();
+        inorder(list1, root1);
+        inorder(list2, root2);
+        List<Integer> list = mergeTwoSortedLists(list1, list2);
+        
+        return twoSum(list, target);
+    }
+    
+    private void inorder(List<Integer> list, TreeNode root) {
+        if (root == null) {
+            return;
+        }
+        
+        inorder(list, root.left);
+        list.add(root.val);
+        inorder(list, root.right);
+    }
+    
+    private List<Integer> mergeTwoSortedLists(List<Integer> list1, List<Integer> list2) {
+        List<Integer> res = new ArrayList<>();
+        int n1 = list1.size();
+        int n2 = list2.size();
+        int i = 0;
+        int j = 0;
+        
+        while (i < n1 && j < n2) {
+            if (list1.get(i) < list2.get(j)) {
+                res.add(list1.get(i));
+                i++;
+            } else {
+                res.add(list2.get(j));
+                j++;
+            } 
+        }
+        
+        if (i != n1) {
+            res.addAll(list1);
+        }
+        
+        if (j != n2) {
+            res.addAll(list2);
+        }
+        
+        return res;
+    }
+    
+    private boolean twoSum(List<Integer> list, int target) {
+        Set<Integer> set = new HashSet<>();
+        
+        for (int i : list) {
+            if (set.contains(target - i)) {
+                return true;
+            }
+            set.add(i);
+        }
+        
+        return false;
+    }
+}
