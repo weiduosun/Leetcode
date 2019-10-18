@@ -1,0 +1,113 @@
+/*
+Given two words (beginWord and endWord), and a dictionary's word list, find all shortest transformation sequence(s) from beginWord to endWord, such that:
+
+Only one letter can be changed at a time
+Each transformed word must exist in the word list. Note that beginWord is not a transformed word.
+Note:
+
+Return an empty list if there is no such transformation sequence.
+All words have the same length.
+All words contain only lowercase alphabetic characters.
+You may assume no duplicates in the word list.
+You may assume beginWord and endWord are non-empty and are not the same.
+Example 1:
+
+Input:
+beginWord = "hit",
+endWord = "cog",
+wordList = ["hot","dot","dog","lot","log","cog"]
+
+Output:
+[
+  ["hit","hot","dot","dog","cog"],
+  ["hit","hot","lot","log","cog"]
+]
+Example 2:
+
+Input:
+beginWord = "hit"
+endWord = "cog"
+wordList = ["hot","dot","dog","lot","log"]
+
+Output: []
+
+Explanation: The endWord "cog" is not in wordList, therefore no possible transformation.
+*/
+
+// Hint: BFS from end to start. DFS from start to end.
+// Time: O(2^n) n is the numer of words in the dictionary ??? 
+// Space: O(n)
+
+class Solution {
+    public List<List<String>> findLadders(String beginWord, String endWord, List<String> wordList) {
+        List<List<String>> res = new ArrayList<>();
+        Set<String> dict = new HashSet<>(wordList);
+        if (!dict.contains(endWord)) {
+            return res;
+        }
+        dict.add(beginWord);
+        Map<String, Integer> map = new HashMap<>();
+        bfs(endWord, map, dict);
+        List<String> list = new ArrayList<>();
+        list.add(beginWord);
+        dfs(beginWord, endWord, map, res, dict, list);
+        return res;
+    } 
+    
+    private void bfs(String start, Map<String, Integer> map, Set<String> dict) {
+        Queue<String> queue = new LinkedList<>();
+        Set<String> set = new HashSet<>();
+        queue.offer(start);
+        set.add(start);
+        int level = 0;
+         
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                String cur = queue.poll();
+                map.put(cur, level);
+                for (String nei : getNeighbors(cur, dict)) {
+                    if (!set.contains(nei)) {
+                        queue.offer(nei);
+                        set.add(nei);
+                    }
+                }
+            }
+            level++;
+        }
+    }
+    
+    private Set<String> getNeighbors(String s, Set<String> dict) {
+        Set<String> set = new HashSet<>();
+        int n = s.length();
+        
+        for (int i = 0; i < n; i++) {
+            for (char c = 'a'; c <= 'z'; c++) {
+                if (c != s.charAt(i)) {
+                    String temp = s.substring(0, i) + c + s.substring(i + 1, n);
+                    if (dict.contains(temp)) {
+                        set.add(temp);
+                    }
+                }
+            }
+        }
+        
+        return set;
+    }
+    
+    private void dfs(String cur, String end, Map<String, Integer> map, List<List<String>> res, 
+                     Set<String> dict, List<String> list) {
+        if (cur.equals(end)) {
+            res.add(new ArrayList<>(list));
+            return;
+        }
+        
+        for (String nei : getNeighbors(cur, dict)) {
+            if (map.get(nei) < map.get(cur)) {
+                list.add(nei);
+                dfs(nei, end, map, res, dict, list);
+                list.remove(list.size() - 1);
+            }
+        }
+    }
+}
