@@ -21,16 +21,13 @@ Output: [-1,-1]
 
 class Solution {
     public int[] searchRange(int[] nums, int target) {
-        int[] res = {-1, -1};
-        
         if (nums == null || nums.length == 0) {
-            return res;
+            return new int[]{-1, -1};
         }
         
-        int n = nums.length;
-        
+        int[] res = new int[2];
         res[0] = searchLeft(nums, target);
-        res[1] = searchRight(nums, target);
+        res[1] = searchRight(nums, target, res[0]);
         
         return res;
     }
@@ -59,8 +56,11 @@ class Solution {
         return -1;
     }
     
-    private int searchRight(int[] nums, int target) {
-        int start = 0;
+    private int searchRight(int[] nums, int target, int start) {
+        if (start == -1) {
+            return -1;
+        }
+        
         int end = nums.length - 1;
         
         while (start + 1 < end) {
@@ -76,10 +76,6 @@ class Solution {
             return end;
         }
         
-        if (nums[start] == target) {
-            return start;
-        }
-        
-        return -1;
+        return start;
     }
 }
