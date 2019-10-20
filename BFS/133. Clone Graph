@@ -26,8 +26,8 @@ You must return the copy of the given node as a reference to the cloned graph.
 */
 
 // Hint: Deep copy each node and its neighbors by a map <given node, copied node>.
-// Time: O(n)
-// Space: O(n)
+// Time: O(E+V)
+// Space: O(V)
 
 /*
 // Definition for a Node.
