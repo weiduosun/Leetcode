@@ -32,6 +32,7 @@ Constraints:
 1 <= sweetness[i] <= 10^5
 */
 
+// Hint: 
 // Time: O(nlg(1)) = O(1)
 // Space: O(1)
 
@@ -49,10 +50,10 @@ class Solution {
         }
         
         while (start < end) {
-            int mid = (end + start + 1) / 2;
+            int mid = (end + start + 1) / 2; // Avoid dead loop since start = mid below.
             int count = countGroups(sweetness, mid);
             if (count >= K + 1) {
-                start = mid;
+                start = mid; // Do not want to miss mid since count == K + 1 meets the requirement, so start = mid + 1 is wrong
             } else {
                 end = mid - 1;
             }
@@ -61,6 +62,7 @@ class Solution {
         return start;
     }
     
+    // Get the maximum number of groups when we want to make each group >= target
     private int countGroups(int[] sweetness, int target) {
         int count = 0;
         int cur = 0;
