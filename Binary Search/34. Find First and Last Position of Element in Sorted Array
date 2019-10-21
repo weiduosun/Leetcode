@@ -36,24 +36,16 @@ class Solution {
         int start = 0;
         int end = nums.length - 1;
         
-        while (start + 1 < end) {
+        while (start < end) {
             int mid = start + (end - start) / 2;
-            if (nums[mid] >= target) {
-                end = mid;
+            if (nums[mid] < target) {
+                start = mid + 1;
             } else {
-                start = mid;
+                end = mid;
             }
         }
         
-        if (nums[start] == target) {
-            return start;
-        }
-        
-        if (nums[end] == target) {
-            return end;
-        }
-        
-        return -1;
+        return nums[start] == target ? start : -1;
     }
     
     private int searchRight(int[] nums, int target, int start) {
@@ -63,19 +55,15 @@ class Solution {
         
         int end = nums.length - 1;
         
-        while (start + 1 < end) {
-            int mid = start + (end - start) / 2;
+        while (start < end) {
+            int mid = (end + start + 1) / 2;
             if (nums[mid] <= target) {
                 start = mid;
             } else {
-                end = mid;
+                end = mid - 1;
             }
         }
         
-        if (nums[end] == target) {
-            return end;
-        }
-        
-        return start;
+        return end;
     }
 }
