@@ -1,0 +1,115 @@
+/*
+Given an array A of strings, find any smallest string that contains each string in A as a substring.
+
+We may assume that no string in A is substring of another string in A.
+
+ 
+Example 1:
+
+Input: ["alex","loves","leetcode"]
+Output: "alexlovesleetcode"
+Explanation: All permutations of "alex","loves","leetcode" would also be accepted.
+Example 2:
+
+Input: ["catg","ctaagt","gcta","ttca","atgcatc"]
+Output: "gctaagttcatgcatc"
+ 
+
+Note:
+
+1 <= A.length <= 12
+1 <= A[i].length <= 20
+*/
+
+// Hint: The shortest path to traverse all nodes in a graph
+// Time: O(n^2*2^n)
+// Space: O(n*2^n)
+
+class Solution {
+    public String shortestSuperstring(String[] A) {
+        if (A == null || A.length == 0) {
+            return "";
+        }
+        
+        //graph[i][j] := A[i]拼接到A[j]后面时，需要添加的字符数量
+        int n = A.length;
+        int[][] graph = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                graph[i][j] = calDist(A[i], A[j]);
+            }
+        }
+        
+        //dp[i][j] := 在i状态下拼接到第j个字符串的开销，parent[i][j] := 在i状态下拼接到第j个字符串时，上一个用于拼接的字符串的下标（用于路径还原）
+        int[][] dp = new int[1 << n][n]; 
+        int[][] parent = new int[1 << n][n];
+        
+        //给dp，parent赋初值
+        for (int i = 0; i < (1 << n); i++) {
+            for (int j = 0; j < n; j++) {
+                dp[i][j] = Integer.MAX_VALUE;
+                parent[i][j] = -1;
+            }
+        }
+        
+        //节点本身的开销是自身长度（结果中所用的第一个字符串的所有字符，一定是要全部加入到结果当中）
+        for (int i = 0; i < n; i++) {
+            dp[1 << i][i] = A[i].length();
+        }
+        
+        for (int k = 0; k < (1 << n); k++) {
+            for (int i = 0; i < n; i++) {
+                //如果i还没走到，无法更新dp[k][i]
+                if ((k & (1 << i)) == 0) {
+                    continue;
+                }
+                //退回i节点的前一步状态
+                int prev = k - (1 << i);
+                for (int j = 0; j < n; j++) {
+                    //如果从j节点走到i节点比现在的走法更近，更新dp[k][i]，并记下parent为j，用于路径还原
+                    if (dp[prev][j] != Integer.MAX_VALUE 
+                        && dp[prev][j] + graph[j][i] < dp[k][i]) {
+                        dp[k][i] = dp[prev][j] + graph[j][i];
+                        parent[k][i] = j;
+                    }
+                }
+            }
+        }
+        
+        //找到dp【(1 << n) - 1】最小值对应的parent，作为路径还原的起点
+        int cur = 0;
+        int min = Integer.MAX_VALUE;
+        for (int j = 0; j < n; j++) {
+            if (dp[(1 << n) - 1][j] < min) {
+                min = dp[(1 << n) - 1][j];
+                cur = j;
+            }
+        }
+        
+        //路径还原
+        int s = (1 << n) - 1;
+        String res = "";
+        while (s > 0) {
+            int prev = parent[s][cur];
+            res = prev == -1 ? A[cur] + res : A[cur].substring(A[cur].length() - graph[prev][cur]) + res;
+            s -= (1 << cur);
+            cur = prev;
+        }
+        
+        return res;
+    }
+    
+    //计算s2拼接到s1后面时，需要添加的字符数量
+    private int calDist(String s1, String s2) {
+        int n1 = s1.length();
+        int n2 = s2.length();
+        
+        for (int i = 0; i < n1; i++) {
+            if (s2.startsWith(s1.substring(i))) {
+                return n2 - (n1- i);
+            }
+        }
+        
+        return n2;
+    }
+}
