@@ -19,6 +19,7 @@ s has only lowercase English letters.
 1 <= k <= s.length
 */
 
+// Hint: dp[i][j] := the minimum removing to make s.substring(i, j + 1) palindrome.
 // Time: O(n^2)
 // Space: O(n^2)
 
