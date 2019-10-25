@@ -1,0 +1,61 @@
+/*
+Given an array which consists of non-negative integers and an integer m, you can split the array into m non-empty continuous subarrays. Write an algorithm to minimize the largest sum among these m subarrays.
+
+Note:
+If n is the length of array, assume the following constraints are satisfied:
+
+1 ≤ n ≤ 1000
+1 ≤ m ≤ min(50, n)
+Examples:
+
+Input:
+nums = [7,2,5,10,8]
+m = 2
+
+Output:
+18
+
+Explanation:
+There are four ways to split nums into two subarrays.
+The best way is to split it into [7,2,5] and [10,8],
+where the largest sum among the two subarrays is only 18.
+*/
+
+// Hint: f(i, j) := the minimum value of the largest sum of first i elements in nums into j subarrays
+// Be careful of the corner cases. Run a simple test case if not sure
+// Time: O(n^2*m)
+// Space: O(mn)
+
+class Solution {
+    public int splitArray(int[] nums, int m) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        
+        int n = nums.length;
+        long[][] dp = new long[m + 1][n + 1];
+        
+        for (int i = 0; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                dp[i][j] = Integer.MAX_VALUE;
+            }
+        }
+        
+        long[] sums = new long[n + 1];
+        
+        for (int i = 0; i < n; i++) {
+            sums[i + 1] = sums[i] + nums[i];
+        }
+        
+        // f(i, j) = max(f(i - 1, j), f(i - 1, k) + sum[j] - sum[k]) | k <= j
+        for (int i = 1; i <= m; i++) {
+            for (int j = i - 1; j <= n; j++) {
+                for (int k = 0; k < j; k++) {
+                    dp[i][j] = Math.min(dp[i][j], Math.max(dp[i - 1][k], sums[j] - sums[k]));
+                }
+            }
+        }
+        
+        return (int) dp[m][n];
+    }
+}
