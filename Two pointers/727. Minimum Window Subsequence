@@ -1,0 +1,79 @@
+/*
+Given a string s and an integer k, find out if the given string is a K-Palindrome or not.
+
+A string is K-Palindrome if it can be transformed into a palindrome by removing at most k characters from it.
+
+ 
+
+Example 1:
+
+Input: s = "abcdeca", k = 2
+Output: true
+Explanation: Remove 'b' and 'e' characters.
+ 
+
+Constraints:
+
+1 <= s.length <= 1000
+s has only lowercase English letters.
+1 <= k <= s.length
+*/
+
+// Hint: use left and right pointers to maintain a window for string T
+          extend right pointer until all the characters in T are found
+          left pointer starts from right pointer position, move it back until the first character in T is found
+          then we compare window size to find the valid min window
+          for the next finding, move right pointer to the right of current left pointer position
+// Time: O(mn)
+// Space: O(1)
+// Folk from https://github.com/NEU-ZYXi/LeetCode-Java/commit/f1cc3c23c99d9ba2dad29b445e25c836791eeb9b
+
+class Solution {
+    public String minWindow(String S, String T) {
+        if (S == null || T == null) {
+            return "";
+        }
+        
+        int min = Integer.MAX_VALUE;
+        String res = "";
+        int start = -1;
+        int ns = S.length();
+        int nt = T.length();
+        int i = 0;
+        int j = 0;
+        
+        while (j < ns) {
+            int tIndex = 0;
+            while (j < ns) {
+                if (S.charAt(j) == T.charAt(tIndex)) {
+                    tIndex++;
+                }
+                if (tIndex == nt) {
+                    break;
+                }
+                j++;
+            }
+            if (j == ns) {
+                break;
+            }
+            i = j;
+            tIndex--;
+            while (i >= 0) {
+                if (S.charAt(i) == T.charAt(tIndex)) {
+                    tIndex--;
+                }
+                if (tIndex < 0) {
+                    break;
+                }
+                i--;
+            }
+            if (j - i + 1 < min) {
+                min = j - i + 1;
+                res = S.substring(i, j + 1);
+            }
+            j = i + 1; 
+        }
+        
+        return res;
+    }
+}
