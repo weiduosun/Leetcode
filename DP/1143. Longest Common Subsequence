@@ -67,7 +67,7 @@ class Solution {
                 res.append(text1.charAt(p - 1));
                 p--;
                 q--;
-            } else if (dp[p - 1][q] >= dp[p][q - 1]) { // 不想错过任何一个加入char的机会（第一个if),因此希望尽量下降得慢些
+            } else if (dp[p - 1][q] >= dp[p][q - 1]) { // 因为Math.max(dp[i - 1][j], dp[i][j - 1])，所以采用的情况为dp[p - 1][q]
                 p--;
             } else {
                 q--;
