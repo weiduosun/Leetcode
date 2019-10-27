@@ -64,7 +64,7 @@ class Solution {
                 sb.append(str1.charAt(p - 1));
                 p--;
                 q--;
-            } else if (dp[p - 1][q] < dp[p][q - 1]) { //因为Math.min(dp[i - 1][j], dp[i][j - 1]) + 1，所以采用的情况为dp[i - 1][j]
+            } else if (dp[p - 1][q] < dp[p][q - 1]) { //因为Math.min(dp[i - 1][j], dp[i][j - 1]) + 1，所以采用的情况为dp[p - 1][q]
                 sb.append(str1.charAt(p - 1));
                 p--;
             } else {
