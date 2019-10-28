@@ -15,55 +15,89 @@ Note:
 The array is only modifiable by the update function.
 You may assume the number of calls to update and sumRange function is distributed evenly.
 */
-
 class NumArray {
+
+    class Node {
+        private int start;
+        private int end;
+        private int sum;
+        private Node left;
+        private Node right;
+        
+        public Node(int start, int end, int sum) {
+            this.start = start;
+            this.end = end;
+            this.sum = sum;
+        }
+        
+        public Node(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+    }
     
-    private int[] tree;
+    private Node root;
     private int[] nums;
     
-    // Get the lowest bit
-    private int lowbit(int i) {
-        return i & (-i);
-    }
-    
-    private void updateTree(int i, int delta) {
-        int n = tree.length;
-        
-        while (i < n) {
-            tree[i] += delta;
-            i += lowbit(i);
-        }
-    }
-    
-    private int queryTree(int i) {
-        int res = 0;
-        
-        while (i >= 1) {
-            res += tree[i];
-            i -= lowbit(i);
-        }
-        
-        return res;
-    }
-    
     public NumArray(int[] nums) {
-        this.nums = nums;
-        int n = nums.length;
-        tree = new int[n + 1];
-        for (int i = 0; i < n; i++) {
-            updateTree(i + 1, nums[i]);
+        if (nums == null || nums.length == 0) {
+            return;
         }
+        
+        this.nums = nums;
+        root = buildTree(0, nums.length - 1);
+    }
+    
+    private Node buildTree(int start, int end) {
+        if (start == end) {
+            return new Node(start, end, nums[start]);
+        }
+        
+        Node node = new Node(start, end);
+        int mid = start + (end - start) / 2;
+        node.left = buildTree(start, mid);
+        node.right = buildTree(mid + 1, end);
+        node.sum = node.left.sum + node.right.sum;
+        
+        return node;
     }
     
     public void update(int i, int val) {
-        // delta = val - nums[i]
-        updateTree(i + 1, val - nums[i]);
-        // renew nums[i]
-        nums[i] = val;
+        updateTree(i, root, val);
+    }
+    
+    private void updateTree(int i, Node root, int val) {
+        if (root.start == root.end && root.start == i) {
+            root.sum = val;
+            return;
+        }
+        
+        int mid = root.start + (root.end - root.start) / 2;
+        if (i <= mid) {
+            updateTree(i, root.left, val);
+        } else {
+            updateTree(i, root.right, val);
+        }
+        root.sum = root.left.sum + root.right.sum;
     }
     
     public int sumRange(int i, int j) {
-        return queryTree(j + 1) - queryTree(i);
+        return queryTree(i, j, root);
+    }
+    
+    private int queryTree(int i, int j, Node root) {
+        if (root.start == i && root.end == j) {
+            return root.sum;
+        }
+        
+        int mid = root.start + (root.end - root.start) / 2;
+        if (j <= mid) {
+            return queryTree(i, j, root.left);
+        } else if (i > mid) {
+            return queryTree(i, j, root.right);
+        } else {
+            return queryTree(i, mid, root.left) + queryTree(mid + 1, j, root.right);
+        }
     }
 }
 
