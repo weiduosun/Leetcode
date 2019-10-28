@@ -31,7 +31,7 @@ class Solution {
             return "";
         }
         
-        //graph[i][j] := A[i]拼接到A[j]后面时，需要添加的字符数量
+        //graph[i][j] := A[j]拼接到A[i]后面时，需要添加的字符数量
         int n = A.length;
         int[][] graph = new int[n][n];
         for (int i = 0; i < n; i++) {
