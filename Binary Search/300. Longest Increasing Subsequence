@@ -1,0 +1,67 @@
+/*
+Given an unsorted array of integers, find the length of longest increasing subsequence.
+
+Example:
+
+Input: [10,9,2,5,3,7,101,18]
+Output: 4 
+Explanation: The longest increasing subsequence is [2,3,7,101], therefore the length is 4. 
+Note:
+
+There may be more than one LIS combination, it is only necessary for you to return the length.
+Your algorithm should run in O(n2) complexity.
+Follow up: Could you improve it to O(n log n) time complexity?
+*/
+
+// Hint: dp[i] := the last element of a subsequence whose length is i
+//       The value of dp array is increasing.
+//       When we append an element to a subsequence, find out the index of the last element that is smaller than it (indexOflastSmallerThanTarget).
+//       After that, the value of dp[indexOflastSmallerThanTarget + 1] should be this element (increase the length of subsequence that ends with dp[indexOflastSmallerThanTarget] by 1).
+// Time: O(nlgn)
+// Space: O(n)
+
+class Solution {
+    public int lengthOfLIS(int[] nums) {
+        if (nums == null || nums.length == 0) {
+            return 0;
+        }
+        
+        int n = nums.length;
+        int[] dp = new int[n];
+        Arrays.fill(dp, Integer.MAX_VALUE);
+        int res = 0;
+        
+        for (int i = 0; i < n; i++) {
+            int indexOflastSmallerThanTarget = binarySearch(dp, nums[i], i);
+            dp[indexOflastSmallerThanTarget + 1] = nums[i];
+        }
+        
+        for (int i = n - 1; i > 0; i--) {
+            if (dp[i] != Integer.MAX_VALUE) {
+                return i + 1;
+            }
+        }
+        
+        return 1;
+    }
+    
+    //Find out the index of the last element that is smaller than the target
+    private int binarySearch(int[] dp, int target, int end) {
+        int start = 0;
+        
+        while (start < end) {
+            int mid = (start + end + 1) / 2;
+            if (dp[mid] < target) {
+                start = mid;
+            } else {
+                end = mid - 1;
+            }
+        }
+        
+        if (dp[start] >= target) {
+            return start - 1;
+        }
+        
+        return start;
+    }
+}
