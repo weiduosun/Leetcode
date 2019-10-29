@@ -21,7 +21,7 @@ The best way is to split it into [7,2,5] and [10,8],
 where the largest sum among the two subarrays is only 18.
 */
 
-// Hint: f(i, j) := the minimum value of the largest sum of first i elements in nums into j subarrays
+// Hint: f(i, j) := the minimum value of the largest sum of first j elements in nums into i subarrays
 // Be careful of the corner cases. Run a simple test case if not sure
 // Time: O(n^2*m)
 // Space: O(mn)
@@ -47,9 +47,9 @@ class Solution {
             sums[i + 1] = sums[i] + nums[i];
         }
         
-        // f(i, j) = max(f(i - 1, j), f(i - 1, k) + sum[j] - sum[k]) | k <= j
+        // f(i, j) = min(max(f(i - 1, k), sum[j] - sum[k]) | k <= j))
         for (int i = 1; i <= m; i++) {
-            for (int j = i - 1; j <= n; j++) {
+            for (int j = 0; j <= n; j++) {
                 for (int k = 0; k < j; k++) {
                     dp[i][j] = Math.min(dp[i][j], Math.max(dp[i - 1][k], sums[j] - sums[k]));
                 }
