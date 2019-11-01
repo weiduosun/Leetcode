@@ -35,8 +35,8 @@ connections[i][0] != connections[i][1]
 */
 
 // Hint: MST -> Kruskal's
-// Time: O(E+V)
-// Space: O(E+V)
+// Time: O(ElgE+V)
+// Space: O(V)
 
 class Solution {
     public class UnionFind {
