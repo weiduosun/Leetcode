@@ -34,7 +34,7 @@ Note:
 connections[i][0] != connections[i][1]
 */
 
-// Hint: MST -> Kruskal's
+// Hint: Kruskal's
 // Time: O(ElgE+V)
 // Space: O(V)
 
@@ -96,5 +96,61 @@ class Solution {
         
         // if the MST can be built.
         return N == 1 ? cost : -1;
+    }
+}
+
+// Hint: Prim's
+// Time: O(ElgV+V)
+// Space: O(E+V)
+
+class Solution {    
+    public int minimumCost(int N, int[][] connections) {
+        if (connections == null || connections.length == 0) {
+            return 0;
+        }
+        
+        Map<Integer, Set<int[]>> map = new HashMap<>();
+        
+        for (int i = 1; i <= N; i++) {
+            map.put(i, new HashSet<>());
+        }
+        
+        for (int[] c : connections) {
+            map.get(c[0]).add(new int[]{c[1], c[2]});
+            map.get(c[1]).add(new int[]{c[0], c[2]});
+        }
+        
+        int cost = 0;
+        
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> (a[1] - b[1]));
+        for (int[] s : map.get(1)) {
+            pq.offer(s);
+        }
+        
+        Set<Integer> set = new HashSet<>();
+        set.add(1);
+        
+        while (!pq.isEmpty()) {
+            int[] cur = pq.poll();
+            
+            if (set.contains(cur[0])) {
+                continue;
+            }
+            
+            set.add(cur[0]);
+            cost += cur[1];
+            
+            if (set.size() == N) {
+                return cost;
+            }
+            
+            for (int[] nei : map.get(cur[0])) {
+                if (!set.contains(nei[0])) {
+                    pq.offer(nei);
+                }
+            }
+        }
+        
+        return N == set.size() ? cost : -1;
     }
 }
